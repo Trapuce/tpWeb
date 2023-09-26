@@ -4,7 +4,7 @@ function DnD(canvas, interactor) {
     this.finalX = 0;
     this.finalY = 0;
     this.isDrawing = false;
-
+   
     this.mouseClick = function(evt) {
         var res = getMousePosition(canvas, evt);
         this.initX = res.x;
