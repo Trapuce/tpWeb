@@ -10,6 +10,7 @@ function DnD(canvas, interactor) {
         this.initX = res.x;
         this.initY = res.y;
         this.isDrawing = true;
+        this.interactor = interactor;
     }.bind(this);
 
     // Met à jour les coordonnées finales pendant le mouvement de la souris
@@ -18,7 +19,6 @@ function DnD(canvas, interactor) {
             var res = getMousePosition(canvas, evt);
             this.finalX = res.x;
             this.finalY = res.y;
-            this.draw(); // Appelle la fonction de dessin à chaque mouvement
         }
     }.bind(this);
 
@@ -27,20 +27,12 @@ function DnD(canvas, interactor) {
             var res = getMousePosition(canvas, evt);
             this.finalX = res.x;
             this.finalY = res.y;
-            this.draw();
             this.isDrawing = false;
         }
     }.bind(this);
 
 
-    this.draw = function() {
-        var ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.moveTo(this.initX, this.initY);
-        ctx.lineTo(this.finalX, this.finalY);
-        ctx.stroke();
-    }.bind(this);
+    
 
     canvas.addEventListener('mousedown', this.mouseClick, false);
     canvas.addEventListener('mousemove', this.mouseMovement, false);
@@ -55,5 +47,3 @@ function getMousePosition(canvas, evt) {
     };
 }
 
-var canvas = document.getElementById('myCanvas');
-var dnd = new DnD(canvas);
