@@ -4,7 +4,7 @@ function Shape(thickness, color) {
 }
 
 function Rectangle(x, y, width, height, thickness, color) {
-    Shape.call(this, color, thickness);
+    Shape.call(this, thickness , color);
     this.x = x;
     this.y = y;
     this.width = width;

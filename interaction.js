@@ -4,13 +4,13 @@ function DnD(canvas, interactor) {
     this.finalX = 0;
     this.finalY = 0;
     this.isDrawing = false;
-   
+    this.interactor = interactor;
     this.mouseClick = function(evt) {
         var res = getMousePosition(canvas, evt);
         this.initX = res.x;
         this.initY = res.y;
         this.isDrawing = true;
-        this.interactor = interactor;
+        this.interactor.onInteractionStart(this);
     }.bind(this);
 
     // Met à jour les coordonnées finales pendant le mouvement de la souris
@@ -19,6 +19,7 @@ function DnD(canvas, interactor) {
             var res = getMousePosition(canvas, evt);
             this.finalX = res.x;
             this.finalY = res.y;
+            this.interactor.onInteractionUpdate(this);
         }
     }.bind(this);
 
@@ -28,6 +29,7 @@ function DnD(canvas, interactor) {
             this.finalX = res.x;
             this.finalY = res.y;
             this.isDrawing = false;
+            this.interactor.onInteractionEnd(this);
         }
     }.bind(this);
 
