@@ -33,9 +33,6 @@ function DnD(canvas, interactor) {
         }
     }.bind(this);
 
-
-    
-
     canvas.addEventListener('mousedown', this.mouseClick, false);
     canvas.addEventListener('mousemove', this.mouseMovement, false);
     canvas.addEventListener('mouseup', this.mouseRelease, false);

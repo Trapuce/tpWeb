@@ -12,68 +12,75 @@ function Pencil(ctx, drawing, canvas) {
 	new DnD(canvas, this);
 
 
+	document.getElementById("spinnerWidth").addEventListener("change", (e)=>  {
+		this.currLineWidth = e.target.value
+	})
+
+	document.getElementById("colour").addEventListener("change", (e)=>  {
+		this.currColour = e.target.value
+	})
+
 	document.getElementById("butRect").addEventListener("click", ()=>  {
-		this.updateShape(0);
+		this.currEditingMode = editingMode.rect
 	})
 
 	document.getElementById("butLine").addEventListener("click", ()=>  {
-		this.updateShape(1);
+		this.currEditingMode = editingMode.line
 	})
+
 	// Implémentez ici les 3 fonctions onInteractionStart, onInteractionUpdate et onInteractionEnd
 
 	this.onInteractionStart = function(dnd){
-		switch(this.currEditingMode) {
-			case editingMode.rect: {
-				this.currentShape = new Rectangle(dnd.initX , dnd.initY , dnd.finalX , dnd.finalY , this.currEditingMode , this.currColour );
-				break;
-			}
-			case editingMode.line: {
-				this.currentShape = new Line(dnd.initX , dnd.initY , dnd.finalX , dnd.finalY , this.currEditingMode , this.currColour );
-				break;
-			}
-		}
-		 
+	}.bind(this);
 
-	}.bind(this)
 	this.onInteractionUpdate = function(dnd){
-
 		switch(this.currEditingMode) {
 			case editingMode.rect: {
-				this.currentShape = new Rectangle(dnd.initX , dnd.initY , dnd.finalX- dnd.initX , dnd.finalY-dnd.initY , this.currEditingMode , this.currColour );
+				this.currentShape = new Rectangle(dnd.initX , dnd.initY , dnd.finalX-dnd.initX , dnd.finalY-dnd.initY , this.currLineWidth , this.currColour );
 				break;
 			}
 			case editingMode.line: {
-				this.currentShape = new Line(dnd.initX , dnd.initY , dnd.finalX , dnd.finalY , this.currEditingMode , this.currColour );
+				this.currentShape = new Line(dnd.initX , dnd.initY , dnd.finalX , dnd.finalY , this.currLineWidth , this.currColour );
 				break;
 			}
 		}
-		this.drawing.paint(ctx)
+		this.drawing.paint(ctx,canvas)
 		this.currentShape.paint(ctx);
-		
+	}.bind(this);
 
-	}.bind(this)
 	this.onInteractionEnd= function(dnd){
-		
-		switch(this.currEditingMode) {
-			case editingMode.rect: {
-				this.currentShape = new Rectangle(dnd.initX , dnd.initY , dnd.finalX- dnd.initX , dnd.finalY-dnd.initY , this.currEditingMode , this.currColour );
-				break;
-			}
-			case editingMode.line: {
-				this.currentShape = new Line(dnd.initX , dnd.initY , dnd.finalX , dnd.finalY , this.currEditingMode , this.currColour );
-				break;
-			}
-		}
-		this.drawing.tab.push(this.currentShape)
-		this.drawing.paint(ctx)
-	}.bind(this)
+		var uuid = generateUUID();
+		console.log(uuid)
+		drawing.tab.set(uuid , this.currentShape);
+		drawing.paint(ctx,canvas);
+		updateShapeList(uuid, this.currentShape)
+		document.getElementById("remove" + uuid).onclick =
+		(event) => remove(drawing, event.currentTarget.id.substring(6)
+		, ctx, canvas)
 
-	this.updateShape = function(x) {
-		pencil.currEditingMode = x;
-		console.log(pencil.currEditingMode)
-	}.bind(this)
-	
-
+	}.bind(this);
 };
+	function generateUUID() { // Public Domain/MIT
+		var d = new Date().getTime();//Timestamp
+		var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16;//random number between 0 and 16
+			if(d > 0){//Use timestamp until depleted
+				r = (d + r)%16 | 0;
+				d = Math.floor(d/16);
+			} else {//Use microseconds since page-load if supported
+				r = (d2 + r)%16 | 0;
+				d2 = Math.floor(d2/16);
+			}
+			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+		});
+	}
+
+	function remove(drawing, index, ctx, canvas) {
+		console.log(index)
+		drawing.tab.delete(index)
+		document.getElementById('liRemove' + index).remove()
+		drawing.paint(ctx, canvas)
+	}
 
 
